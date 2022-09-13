@@ -99,6 +99,7 @@
     font-family: "楷体";
     font-weight: bold;
     color: rgb(37, 37, 31);
+    cursor: pointer;
 }
 
 .chord {
