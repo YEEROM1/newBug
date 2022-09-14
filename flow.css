@@ -46,6 +46,10 @@
     background-color: antiquewhite;
 }
 
+.psvg {
+    z-index: 100;
+}
+
 .sort {
     z-index: 1000;
     display: flex;
@@ -69,6 +73,23 @@
     font-weight: bold;
     color: rgb(37, 37, 31);
     cursor: pointer;
+}
+
+.describe {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40vw;
+    height: 15vh;
+    left: 20vw;
+    bottom: 4vh;
+    background-color: aqua;
+    font-size: 18px;
+    text-indent: 36px;
+    font-family: "楷体";
+    font-weight: bold;
+    transition: all 0.5s;
 }
 
 .container {
@@ -131,6 +152,10 @@
     fill: steelblue;
     stroke: steelblue;
     opacity: 0.5;
+}
+
+.active {
+    cursor: pointer;
 }
 
 .step {
