@@ -56,6 +56,7 @@
     position: absolute;
     right: 100px;
     top: 60px;
+    animation: appear 0.5s;
 }
 
 .sort1 {
@@ -159,7 +160,7 @@
     cursor: pointer;
     outline-color: rgb(171, 61, 158);
     outline-width: 2px;
-    outline-style:dashed;
+    outline-style: dashed;
 }
 
 .step {
@@ -184,4 +185,14 @@
     fill: none;
     stroke: black;
     stroke-width: 1px;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
