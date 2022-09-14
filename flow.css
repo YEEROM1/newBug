@@ -80,16 +80,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40vw;
-    height: 15vh;
-    left: 20vw;
-    bottom: 4vh;
+    padding: 0 10px;
+    border-radius: 10px;
+    width: 50vw;
+    height: 18vh;
+    left: 13vw;
+    bottom: 2vh;
     background-color: aqua;
     font-size: 18px;
     text-indent: 36px;
     font-family: "楷体";
     font-weight: bold;
-    transition: all 0.5s;
 }
 
 .container {
@@ -150,12 +151,15 @@
 
 .dot.main {
     fill: steelblue;
-    stroke: steelblue;
+    stroke: white;
     opacity: 0.5;
 }
 
 .active {
     cursor: pointer;
+    outline-color: rgb(171, 61, 158);
+    outline-width: 2px;
+    outline-style:dashed;
 }
 
 .step {
