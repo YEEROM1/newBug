@@ -1,7 +1,9 @@
 var psvg;
 var m = 0;
+var describe = document.querySelector('.describe')
 
-function lines(Ddata, index) {
+function lines(Pdata, index) {
+    var Ddata = Pdata.steps;
     var width = document.querySelector('.process').offsetWidth * 7 / 8,
         height = document.querySelector('.process').offsetHeight - 50;
     var margin = width / 7;
@@ -169,8 +171,8 @@ function lines(Ddata, index) {
             .transition()
             .duration(500)
             .attr("d", function (d) {
-                if (like(d.x, data.main) && !like(d.x, data.otext.tips.step)) {
-                    return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 50);
+                if (!like(d.x, data.otext.tips.step)) {
+                    return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 30);
                 } else if (like(d.x, data.main)) {
                     return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10);
                 } else {
@@ -184,7 +186,11 @@ function lines(Ddata, index) {
             .enter()
             .append("circle")
             .attr("class", function (d) {
-                return like(d.x, data.main) ? "dot" : "dot main"
+                var temp = like(d.x, data.main) ? "dot" : "dot main";
+                if (!like(d.x, Pdata.click.node)) {
+                    temp += " " + "active"
+                }
+                return temp
             })
             //添加圆心坐标
             .attr("cx", line.x())
@@ -206,7 +212,7 @@ function lines(Ddata, index) {
             .attr("cx", function (d) {
                 return x(d);
             })
-            .attr("cy", height / (Ddata.length + 1) * (k + 1) - 50)
+            .attr("cy", height / (Ddata.length + 1) * (k + 1) - 30)
             .transition()
             .duration(700)
             .delay(300)
@@ -223,14 +229,14 @@ function lines(Ddata, index) {
             .attr("x", function (d) {
                 return x(d) - this.innerHTML.length * 16 / 2
             })
-            .attr("y", height / (Ddata.length + 1) * (k + 1) - 72)
+            .attr("y", height / (Ddata.length + 1) * (k + 1) - 52)
             .attr("opacity", 0)
             .transition()
             .duration(500)
             .attr("x", function (d) {
                 return x(d) - this.innerHTML.length * 16 / 2
             })
-            .attr("y", height / (Ddata.length + 1) * (k + 1) - 64)
+            .attr("y", height / (Ddata.length + 1) * (k + 1) - 44)
             .attr("opacity", 1)
 
         if (data.otext.link[0].start) {
@@ -300,6 +306,15 @@ function lines(Ddata, index) {
                 .attr("r", 5)
         }
     }
+    console.log(Pdata.click);
+    var cactive = document.querySelectorAll('.active')
+    console.log(cactive.length);
+    for (let j = 0; j < cactive.length; j++) {
+        cactive[j].addEventListener("click", function () {
+            console.log(j);
+            describe.innerHTML = Pdata.click.describe[j];
+        })
+    }
 }
 
 function like(tar, arr) {
@@ -313,7 +328,7 @@ function like(tar, arr) {
 
 function render(index) {
     d3.json('flow.json').then(d => {
-        lines(d.class[index].steps, index)
+        lines(d.class[index], index)
         if (!index) {
             psvg = document.getElementsByTagName('svg')
             var sort = document.querySelectorAll('.sort1')
@@ -360,6 +375,7 @@ var mSwiper = new Swiper('.swiper', {
             if (svg.length) {
                 svg[0].remove();
             }
+            document.querySelector('.describe').innerHTML = "";
         },
         slideChangeTransitionEnd: function () {
             var process = document.querySelector('.process')
@@ -381,3 +397,5 @@ var swiperA = new Swiper('.swiperA', {
         el: '.swiper-pagination',
     }
 })
+
+document.write("<script src='chord.js'></script>")
