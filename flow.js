@@ -227,6 +227,8 @@ function lines(Pdata, index) {
                 return data.otext.tips.supply[i]
             })
             .attr("x", function (d) {
+
+                console.log(this.innerHTML.length);
                 return x(d) - this.innerHTML.length * 16 / 2
             })
             .attr("y", height / (Ddata.length + 1) * (k + 1) - 52)
@@ -262,14 +264,14 @@ function lines(Pdata, index) {
                 .attr("x", function (d) {
                     return lx(d) - this.innerHTML.length * 16 / 2
                 })
-                .attr("y", height / (Ddata.length + 1) * (k + 1) + 88)
+                .attr("y", height / (Ddata.length + 1) * (k + 1) + 92)
                 .attr("opacity", 0)
                 .transition()
                 .duration(500)
                 .attr("x", function (d) {
                     return lx(d) - this.innerHTML.length * 16 / 2
                 })
-                .attr("y", height / (Ddata.length + 1) * (k + 1) + 80)
+                .attr("y", height / (Ddata.length + 1) * (k + 1) + 84)
                 .attr("opacity", 1)
 
             tsvg.selectAll(".links")
@@ -295,7 +297,15 @@ function lines(Pdata, index) {
                 .data(lprocess.process)
                 .enter()
                 .append("circle")
-                .attr("class", "dot process")
+                // "dot process"
+                .attr("class", function (d) {
+                    var temp = "dot process";
+                    console.log(d);
+                    if (!like(d, Pdata.click.node)) {
+                        temp += " " + "active"
+                    }
+                    return temp
+                })
                 .attr("cx", function (d) {
                     return lx(d)
                 })
@@ -306,12 +316,9 @@ function lines(Pdata, index) {
                 .attr("r", 5)
         }
     }
-    console.log(Pdata.click);
     var cactive = document.querySelectorAll('.active')
-    console.log(cactive.length);
     for (let j = 0; j < cactive.length; j++) {
         cactive[j].addEventListener("click", function () {
-            console.log(j);
             describe.innerHTML = Pdata.click.describe[j];
         })
     }
@@ -327,6 +334,7 @@ function like(tar, arr) {
 }
 
 function render(index) {
+    document.querySelector('.describe').innerHTML = "";
     d3.json('flow.json').then(d => {
         lines(d.class[index], index)
         if (!index) {
@@ -334,7 +342,6 @@ function render(index) {
             var sort = document.querySelectorAll('.sort1')
             for (var i = 0; i < sort.length; i++) {
                 sort[i].addEventListener("click", function () {
-                    console.log(parseInt(index + this.id));
                     if (this.id != m) {
                         psvg[0].remove()
                         render(this.id);
