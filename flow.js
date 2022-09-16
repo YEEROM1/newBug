@@ -1,5 +1,4 @@
 var psvg;
-var m = 0;
 var describe = document.querySelector('.describe')
 
 function lines(Pdata, index) {
@@ -106,7 +105,7 @@ function lines(Pdata, index) {
             .enter()
             .append("text")
             .attr("class", function (d) {
-                return like(d.x, data.main) ? "step" : "step main"
+                return like(d.x, data.main) ? "step main" : "step"
             })
             .text(function (d) {
                 return d.x
@@ -163,7 +162,7 @@ function lines(Pdata, index) {
             .enter()
             .append("path")
             .attr("class", function (d) {
-                return like(d.x, data.main) ? "shortM" : "longM"
+                return like(d.x, data.main) ? "longM" : "shortM"
             })
             .attr("d", function (d) {
                 return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1)) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1));
@@ -171,12 +170,12 @@ function lines(Pdata, index) {
             .transition()
             .duration(500)
             .attr("d", function (d) {
-                if (!like(d.x, data.otext.tips.step)) {
+                if (like(d.x, data.otext.tips.step)) {
                     return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 30);
                 } else if (like(d.x, data.main)) {
-                    return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10);
-                } else {
                     return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 20) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 20);
+                } else {
+                    return "M" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) - 10) + "L" + (x(d.x)) + "," + (height / (Ddata.length + 1) * (k + 1) + 10);
                 }
             })
 
@@ -186,8 +185,8 @@ function lines(Pdata, index) {
             .enter()
             .append("circle")
             .attr("class", function (d) {
-                var temp = like(d.x, data.main) ? "dot" : "dot main";
-                if (!like(d.x, Pdata.click.node)) {
+                var temp = like(d.x, data.main) ? "dot main" : "dot";
+                if (like(d.x, Pdata.click.node)) {
                     temp += " " + "active"
                 }
                 return temp
@@ -201,7 +200,7 @@ function lines(Pdata, index) {
             .delay(300)
             .attr("opacity", 1)
             .attr("r", function (d) {
-                return like(d.x, data.main) ? 5 : 10
+                return like(d.x, data.main) ? 10 : 5
             });
 
         tsvg.selectAll(".tips")
@@ -227,8 +226,6 @@ function lines(Pdata, index) {
                 return data.otext.tips.supply[i]
             })
             .attr("x", function (d) {
-
-                console.log(this.innerHTML.length);
                 return x(d) - this.innerHTML.length * 16 / 2
             })
             .attr("y", height / (Ddata.length + 1) * (k + 1) - 52)
@@ -300,8 +297,7 @@ function lines(Pdata, index) {
                 // "dot process"
                 .attr("class", function (d) {
                     var temp = "dot process";
-                    console.log(d);
-                    if (!like(d, Pdata.click.node)) {
+                    if (like(d, Pdata.click.node)) {
                         temp += " " + "active"
                     }
                     return temp
@@ -317,22 +313,21 @@ function lines(Pdata, index) {
         }
     }
     var cactive = document.querySelectorAll('.active')
-    for (let j = 0; j < cactive.length; j++) {
-        cactive[j].addEventListener("click", function () {
-            describe.innerHTML = Pdata.click.describe[j];
+    cactive.forEach(function (item, index) {
+        item.addEventListener('click', function () {
+            describe.innerHTML = Pdata.click.describe[index];
         })
-    }
+    })
 }
 
 function like(tar, arr) {
-    for (var i = 0; i < arr.length; i++) {
-        if (tar == arr[i]) {
-            return 0;
-        }
-    }
-    return 1;
+    var t = arr.some(function (item) {
+        return item == tar;
+    })
+    return t;
 }
 
+var m = 0;
 function render(index) {
     document.querySelector('.describe').innerHTML = "";
     d3.json('flow.json').then(d => {
@@ -340,21 +335,22 @@ function render(index) {
         if (!index) {
             psvg = document.getElementsByTagName('svg')
             var sort = document.querySelectorAll('.sort1')
-            for (var i = 0; i < sort.length; i++) {
-                sort[i].addEventListener("click", function () {
+            sort.forEach(function (item) {
+                item.addEventListener('click', function () {
                     if (this.id != m) {
                         psvg[0].remove()
                         render(this.id);
                         m = this.id
                     }
                 })
-            }
+            })
         }
     })
 }
 
 //轴（轮播图）
 var mSwiper = new Swiper('.swiper', {
+    initialSlide: 11,
     direction: "vertical",
     watchSlidesProgress: true,
     slidesPerView: 4,
@@ -397,6 +393,7 @@ var mSwiper = new Swiper('.swiper', {
     }
 })
 
+console.log(1);
 var swiperA = new Swiper('.swiperA', {
     direction: "vertical",
     mousewheel: true,
