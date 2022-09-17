@@ -33,7 +33,7 @@
     align-items: center;
     width: 70vw;
     height: 100vh;
-    background-color: antiquewhite;
+    background-color: #e5ddd7;
 }
 
 .process {
@@ -143,19 +143,20 @@
 }
 
 .scircle {
-    fill: #4682b4;
+    fill: #80d1c8;
     stroke: #4a4a4a;
 }
 
 .dot {
     fill: white;
-    stroke: steelblue;
+    stroke: #80d1c8;
+    stroke-width: 2px;
 }
 
 .dot.main {
-    fill: steelblue;
+    fill: #80d1c8;
     stroke: white;
-    opacity: 0.5;
+    opacity: 0.7;
 }
 
 .step {
@@ -182,11 +183,28 @@
     stroke-width: 1px;
 }
 
-.active {
+.dot.main.active,
+.dot.active {
     cursor: pointer;
-    stroke-width: 5px;
+    stroke: #01847f;
+    fill: #80d1c8;
+    stroke-width: 6px;
     opacity: 0.5;
-    transition: all cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s;
+}
+
+.dot.main.active:hover,
+.dot.active:hover {
+    opacity: 1;
+    stroke-width: 7;
+    transform: scaleZ(2)
+}
+
+
+.dot.active.selected,
+.dot.main.active.selected {
+    stroke: #984f31;
+    fill: burlywood;
 }
 
 @keyframes appear {
