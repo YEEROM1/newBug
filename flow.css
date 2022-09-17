@@ -113,15 +113,17 @@
 .box {
     height: 100px;
     width: 100px;
-    background-color: rgb(255, 221, 141);
+    background-image: url(material/jar.png);
+    background-size: 90px;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 20px;
+    font-size: 32px;
     font-family: "楷体";
-    font-weight: bold;
-    color: rgb(37, 37, 31);
+    color: white;
     cursor: pointer;
 }
 
