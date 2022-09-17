@@ -81,12 +81,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 10px;
+    padding: 5px 10px;
     border-radius: 10px;
     width: 50vw;
-    height: 18vh;
+    min-height: 50px;
     left: 13vw;
-    bottom: 2vh;
+    top: 80vh;
     background-color: aqua;
     font-size: 18px;
     text-indent: 36px;
@@ -113,6 +113,7 @@
 .box {
     height: 100px;
     width: 100px;
+    /* background-color: rgb(255, 221, 141); */
     background-image: url(./material/jar.png);
     background-size: 90px;
     background-repeat: no-repeat;
@@ -149,20 +150,12 @@
 .dot {
     fill: white;
     stroke: steelblue;
-    stroke-width: 1.5px;
 }
 
 .dot.main {
     fill: steelblue;
     stroke: white;
     opacity: 0.5;
-}
-
-.active {
-    cursor: pointer;
-    outline-color: rgb(171, 61, 158);
-    outline-width: 2px;
-    outline-style: dashed;
 }
 
 .step {
@@ -187,6 +180,13 @@
     fill: none;
     stroke: black;
     stroke-width: 1px;
+}
+
+.active {
+    cursor: pointer;
+    stroke-width: 5px;
+    opacity: 0.5;
+    transition: all cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes appear {
