@@ -185,6 +185,8 @@
 
 .dot.main.active,
 .dot.active {
+    transform-origin: center center;
+    transform-box: fill-box;
     cursor: pointer;
     stroke: #01847f;
     fill: #80d1c8;
@@ -197,7 +199,7 @@
 .dot.active:hover {
     opacity: 1;
     stroke-width: 7;
-    transform: scaleZ(2)
+    transform: scale(1.2)
 }
 
 
