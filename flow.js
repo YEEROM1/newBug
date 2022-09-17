@@ -200,7 +200,7 @@ function lines(Pdata, index) {
             .delay(300)
             .attr("opacity", 1)
             .attr("r", function (d) {
-                return like(d.x, data.main) ? 10 : 5
+                return like(d.x, data.main) ? 12 : 7
             });
 
         tsvg.selectAll(".tips")
@@ -249,7 +249,7 @@ function lines(Pdata, index) {
             var lx = d3.scaleOrdinal()
                 .range(lrange)
                 .domain(lprocess.process)
-
+"active"
             tsvg.selectAll(".processtext")
                 .data(lprocess.process)
                 .enter()
@@ -309,13 +309,18 @@ function lines(Pdata, index) {
                 .transition()
                 .duration(700)
                 .delay(300)
-                .attr("r", 5)
+                .attr("r", 7)
         }
     }
     var cactive = document.querySelectorAll('.active')
     cactive.forEach(function (item, index) {
         item.addEventListener('click', function () {
+            cactive.forEach(function(item){
+                item.classList.remove('selected')
+            })
             describe.innerHTML = Pdata.click.describe[index];
+            item.classList.add('selected')
+            console.log(1);
         })
     })
 }
@@ -350,7 +355,7 @@ function render(index) {
 
 //轴（轮播图）
 var mSwiper = new Swiper('.swiper', {
-    initialSlide: 11,
+    // initialSlide: 11,
     direction: "vertical",
     watchSlidesProgress: true,
     slidesPerView: 4,
