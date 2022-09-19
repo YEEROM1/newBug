@@ -209,6 +209,12 @@
     fill: burlywood;
 }
 
+.chordCir {
+    fill: burlywood;
+    stroke: rgb(110, 78, 78);
+    stroke-width: 2px;
+}
+
 @keyframes appear {
     0% {
         opacity: 0;
