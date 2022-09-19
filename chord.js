@@ -83,7 +83,7 @@ d3.json('chord.json').then(d => {
                     return 7
                 }
             } else {
-                return 40
+                return 50
             }
         })
         
