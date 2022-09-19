@@ -3,7 +3,7 @@ var width = document.querySelector('.chord').offsetWidth,
 
 var radius = Math.min(width, height) / 2;
 
-d3.json('chord1.json').then(d => {
+d3.json('chord.json').then(d => {
     var cluster = d3.cluster()
         .size([360, radius]);
 
