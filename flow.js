@@ -249,7 +249,7 @@ function lines(Pdata, index) {
             var lx = d3.scaleOrdinal()
                 .range(lrange)
                 .domain(lprocess.process)
-"active"
+            
             tsvg.selectAll(".processtext")
                 .data(lprocess.process)
                 .enter()
