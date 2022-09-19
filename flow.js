@@ -249,7 +249,7 @@ function lines(Pdata, index) {
             var lx = d3.scaleOrdinal()
                 .range(lrange)
                 .domain(lprocess.process)
-            
+
             tsvg.selectAll(".processtext")
                 .data(lprocess.process)
                 .enter()
@@ -315,7 +315,7 @@ function lines(Pdata, index) {
     var cactive = document.querySelectorAll('.active')
     cactive.forEach(function (item, index) {
         item.addEventListener('click', function () {
-            cactive.forEach(function(item){
+            cactive.forEach(function (item) {
                 item.classList.remove('selected')
             })
             describe.innerHTML = Pdata.click.describe[index];
@@ -338,12 +338,11 @@ function render(index) {
     d3.json('flow.json').then(d => {
         lines(d.class[index], index)
         if (!index) {
-            psvg = document.getElementsByTagName('svg')
             var sort = document.querySelectorAll('.sort1')
             sort.forEach(function (item) {
                 item.addEventListener('click', function () {
                     if (this.id != m) {
-                        psvg[0].remove()
+                        d3.select('.psvg').remove();
                         render(this.id);
                         m = this.id
                     }
@@ -375,14 +374,11 @@ var mSwiper = new Swiper('.swiper', {
     },
     on: {
         slideChangeTransitionStart: function () {
-            var svg = document.getElementsByTagName('svg');
-            var sort = document.querySelector('.sort')
+            var sort = d3.select('.sort')
             if (sort) {
                 sort.remove();
             }
-            if (svg.length) {
-                svg[0].remove();
-            }
+            d3.select('.psvg').remove();
             document.querySelector('.describe').innerHTML = "";
         },
         slideChangeTransitionEnd: function () {
@@ -398,13 +394,19 @@ var mSwiper = new Swiper('.swiper', {
     }
 })
 
-console.log(1);
 var swiperA = new Swiper('.swiperA', {
     direction: "vertical",
+    initialSlide: 0,
     mousewheel: true,
     pagination: {
         el: '.swiper-pagination',
+    },
+    on: {
+        slideChangeTransitionStart: function () {
+            d3.select(".chordSvg").remove();
+        },
+        slideChangeTransitionEnd: function () {
+            Dchord();
+        }
     }
 })
-
-document.write("<script src='chord.js'></script>")
