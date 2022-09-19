@@ -86,28 +86,6 @@ d3.json('chord.json').then(d => {
                 return 50
             }
         })
-        
-    // svg.append("g")
-    //     .attr("transform", "translate(" + width / 2 + "," + radius + ")")
-    //     .attr("class", "chordText")
-    //     .selectAll("text")
-    //     .data(root.links())
-    //     .enter()
-    //     .append("text")
-    //     .text(function (d) {
-    //         if (!d.source.parent) {
-    //             return d.target.data.name
-    //         }
-    //     })
-    //     .attr("x", function (d) {
-    //         console.log(this.innerHTML.length);
-    //         return calcPath(d.target.x, d.target.y, d.target.depth)[0] - (this.innerHTML.length) * 8 
-    //     })
-    //     .attr("y", function (d) {
-    //         return calcPath(d.target.x, d.target.y, d.target.depth)[1] + 4
-    //     })
-    //     .attr("font-size", "16px")
-
 })
 
 function calcPath(x, y, depth) {
@@ -122,7 +100,7 @@ function calcPath(x, y, depth) {
             return [radius * Math.cos(angle) + y / 3, radius * Math.sin(angle) + y / 3];
         } else if (depth == 1) {
             angle = 0.75 * (x + 150) / 180 * Math.PI;
-            radius *= 0.3
+            radius *= 0.4
             return [radius * Math.cos(angle) + y * 1.25, radius * Math.sin(angle) + y * 2];
         }
     } else {
