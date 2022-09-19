@@ -1,13 +1,13 @@
 var width = document.querySelector('.chord').offsetWidth,
     height = document.querySelector(".chord").offsetHeight;
 
-var radius = Math.min(width, height) / 2 - 50;
+var radius = Math.min(width, height) / 2;
 
-d3.json('chord.json').then(d => {
+d3.json('chord1.json').then(d => {
     var cluster = d3.cluster()
         .size([360, radius]);
 
-    var root = d3.hierarchy(d.node)
+    var root = d3.hierarchy(d)
     cluster(root);
     for (var i = 0; i < root.children.length; i++) {
         // console.log(root.children[i].y);
@@ -15,11 +15,11 @@ d3.json('chord.json').then(d => {
     }
     var svg = d3.select('.chord')
         .append("svg")
-        .attr("width", radius * 2)
+        .attr("width", width)
         .attr("height", radius * 2)
 
     svg.append("g")
-        .attr("transform", "translate(" + radius + "," + radius + ")")
+        .attr("transform", "translate(" + width / 2 + "," + radius + ")")
         .attr("class", "links")
         .selectAll("path")
         .data(root.links())
@@ -27,36 +27,105 @@ d3.json('chord.json').then(d => {
         .append("path")
         .attr("d", function (d) {
             if (d.source.parent) {
-                return "M" + project(d.source.x, d.source.y) + " " +
-                    "C" + project(d.source.x, d.source.y) + " " +
-                    project(d.source.x, d.source.y) + " " +
-                    project(d.source.x, d.source.y)
+                return "M" + calcPath(d.source.x, d.source.y, d.source.depth) +
+                    "Q" + calcPath(d.source.x, d.source.y, d.source.depth) + "," + calcPath(d.source.x, d.source.y, d.source.depth)
             }
         })
+        .attr("opacity", 0)
         .transition()
         .duration(1000)
+        .delay(function (d) {
+            if (d.target.depth == 2) {
+                return 700
+            } else {
+                return 2200
+            }
+        })
         .attr("d", function (d) {
             if (d.source.parent) {
-                return "M" + project(d.source.x, d.source.y) + "" +
-                    "C" + project(d.source.x, (d.source.y + d.target.y) / 2) + " " +
-                    project(d.source.x, (d.source.y + d.target.y) / 2) + " " +
-                    project(d.source.x, d.target.y)
+                return "M" + calcPath(d.source.x, d.source.y, d.source.depth) +
+                    "Q" + calcPath(d.target.x, d.source.y, d.source.depth) + "," + calcPath(d.target.x, d.target.y, d.target.depth)
             }
+        })
+        .attr("opacity", 1)
+
+    svg.append("g")
+        .attr("transform", "translate(" + width / 2 + "," + radius + ")")
+        .attr("class", "chordCir")
+        .selectAll("circle")
+        .data(root.links())
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            return calcPath(d.target.x, d.target.y, d.target.depth)[0]
+        })
+        .attr("cy", function (d) {
+            return calcPath(d.target.x, d.target.y, d.target.depth)[1]
         })
         .transition()
-        .duration(1000)
-        .delay(100)
-        .attr("d", function (d) {
+        .delay(function (d) {
             if (d.source.parent) {
-                return "M" + project(d.source.x, d.source.y) + "" +
-                    "C" + project(d.source.x, (d.source.y + d.target.y) / 2) + " " +
-                    project(d.target.x, (d.source.y + d.target.y) / 2) + " " +
-                    project(d.target.x, d.target.y)
+                if (d.target.depth == 2) {
+                    return 1500
+                } else {
+                    return 3000
+                }
+            } else {
+                return 0
             }
         })
+        .duration(1000)
+        .attr("r", function (d) {
+            if (d.source.parent) {
+                if (d.target.depth == 2) {
+                    return 15
+                } else {
+                    return 7
+                }
+            } else {
+                return 40
+            }
+        })
+        
+    // svg.append("g")
+    //     .attr("transform", "translate(" + width / 2 + "," + radius + ")")
+    //     .attr("class", "chordText")
+    //     .selectAll("text")
+    //     .data(root.links())
+    //     .enter()
+    //     .append("text")
+    //     .text(function (d) {
+    //         if (!d.source.parent) {
+    //             return d.target.data.name
+    //         }
+    //     })
+    //     .attr("x", function (d) {
+    //         console.log(this.innerHTML.length);
+    //         return calcPath(d.target.x, d.target.y, d.target.depth)[0] - (this.innerHTML.length) * 8 
+    //     })
+    //     .attr("y", function (d) {
+    //         return calcPath(d.target.x, d.target.y, d.target.depth)[1] + 4
+    //     })
+    //     .attr("font-size", "16px")
+
 })
 
-function project(x, y, a = 0) {
-    var angle = 0.75 * (x + 180) / 180 * Math.PI, radius = y
-    return [radius * Math.cos(angle), radius * Math.sin(angle)];
+function calcPath(x, y, depth) {
+    var angle = 0.75 * (x + 150) / 180 * Math.PI,
+        radius = y;
+    if (depth) {
+        if (depth == 3) {
+            radius *= 0.9
+            return [radius * Math.cos(angle), radius * Math.sin(angle)];
+        } else if (depth == 2) {
+            radius *= 0.8
+            return [radius * Math.cos(angle) + y / 3, radius * Math.sin(angle) + y / 3];
+        } else if (depth == 1) {
+            angle = 0.75 * (x + 150) / 180 * Math.PI;
+            radius *= 0.3
+            return [radius * Math.cos(angle) + y * 1.25, radius * Math.sin(angle) + y * 2];
+        }
+    } else {
+        return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    }
 }
