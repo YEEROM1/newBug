@@ -177,7 +177,7 @@
     justify-content: center;
 }
 
-.links {
+.chordLinks {
     fill: none;
     stroke: black;
     stroke-width: 1px;
@@ -210,6 +210,7 @@
 }
 
 .chordCir {
+    z-index: 100;
     fill: burlywood;
     stroke: rgb(110, 78, 78);
     stroke-width: 2px;

@@ -396,17 +396,21 @@ var mSwiper = new Swiper('.swiper', {
 
 var swiperA = new Swiper('.swiperA', {
     direction: "vertical",
-    initialSlide: 0,
+    initialSlide: 1,
     mousewheel: true,
     pagination: {
         el: '.swiper-pagination',
     },
     on: {
-        slideChangeTransitionStart: function () {
-            d3.select(".chordSvg").remove();
+        slidePrevTransitionStart: function () {
+            setTimeout(function () {
+                d3.select(".chordSvg").remove()
+            }, 500)
         },
-        slideChangeTransitionEnd: function () {
-            Dchord();
+        slideNextTransitionEnd: function () {
+            if (this.realIndex == 1) {
+                Dchord();
+            }
         }
     }
 })
