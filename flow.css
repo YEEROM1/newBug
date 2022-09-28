@@ -13,7 +13,56 @@
 .left {
     width: 30vw;
     height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    text-align: center;
 }
+
+.left_zhiqu {
+    display: flex;
+}
+
+.zhiqu {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: calc(30vw);
+    height: calc(60vh);
+    background-color: rgb(232, 227, 222);
+}
+
+#zhiqu_lprocess {
+    width: calc(7vw);
+    height: calc(60vh);
+}
+
+#zhiqu_process {
+    width: calc(14vw);
+    height: calc(60vh);
+}
+
+#zhiqu_rprocess {
+    display: flex;
+    width: calc(9vw);
+    height: calc(60vh);
+}
+
+.zhiqu_step {
+    fill: rgb(217, 163, 88);
+}
+
+.tooltip {
+    background: #eee;
+    box-shadow: 0 0 5px #999999;
+    color: #333;
+    font-size: 12px;
+    height: 30%;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    opacity: 0;
+}
+
 
 .swiperCon {
     width: 70vw;

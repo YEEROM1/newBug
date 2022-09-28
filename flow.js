@@ -337,6 +337,7 @@ function render(index) {
     document.querySelector('.describe').innerHTML = "";
     d3.json('flow.json').then(d => {
         lines(d.class[index], index)
+        drawzhiqu(d.zhiqu[index])
         if (!index) {
             var sort = document.querySelectorAll('.sort1')
             sort.forEach(function (item) {
@@ -379,6 +380,7 @@ var mSwiper = new Swiper('.swiper', {
                 sort.remove();
             }
             d3.select('.psvg').remove();
+            d3.select('.zhiqu_svg').remove();
             document.querySelector('.describe').innerHTML = "";
         },
         slideChangeTransitionEnd: function () {

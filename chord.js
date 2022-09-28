@@ -36,8 +36,8 @@ function Dchord() {
             .attr("transform", "translate(" + width / 2 + "," + radius + ")")
             .attr("d", function (d) {
                 if (d.source.parent) {
-                    return "M" + calcPath(d.source.x, d.source.y, d.source.depth) +
-                        "Q" + calcPath(d.source.x, d.source.y, d.source.depth) + "," + calcPath(d.source.x, d.source.y, d.source.depth)
+                    return "M" + calc(d.source.x, d.source.y, d.source.depth) +
+                        "Q" + calc(d.source.x, d.source.y, d.source.depth) + "," + calc(d.source.x, d.source.y, d.source.depth)
                 }
             })
             .attr("opacity", 0)
@@ -52,8 +52,8 @@ function Dchord() {
             })
             .attr("d", function (d) {
                 if (d.source.parent) {
-                    return "M" + calcPath(d.source.x, d.source.y, d.source.depth) +
-                        "Q" + calcPath(d.target.x, d.source.y, d.source.depth) + "," + calcPath(d.target.x, d.target.y, d.target.depth)
+                    return "M" + calc(d.source.x, d.source.y, d.source.depth) +
+                        "Q" + calc(d.target.x, d.source.y, d.source.depth) + "," + calc(d.target.x, d.target.y, d.target.depth)
                 }
             })
             .attr("opacity", 1)
@@ -66,11 +66,12 @@ function Dchord() {
             .attr("class", "chordCir")
             .on("click", nodeClick)
             .append("circle")
+            .attr("opacity", 1)
             .attr("cx", function (d) {
-                return calcPath(d.x, d.y, d.depth)[0]
+                return calc(d.x, d.y, d.depth)[0]
             })
             .attr("cy", function (d) {
-                return calcPath(d.x, d.y, d.depth)[1]
+                return calc(d.x, d.y, d.depth)[1]
             })
             .transition()
             .delay(function (d) {
@@ -99,7 +100,10 @@ function Dchord() {
             })
 
         function nodeClick(d) {
-            // console.log(d);
+            if(d.depth != 1){
+                return;
+            } 
+           
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -129,14 +133,13 @@ function Dchord() {
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + radius + ")")
                 .attr("class", "chordCir")
-                .on("click", nodeClick)
 
             nodeEnter.append("circle")
                 .attr("cx", function (d) {
-                    return calcPath(source.x0, source.y0, source.depth)[0]
+                    return calc(source.x0, source.y0, source.depth)[0]
                 })
                 .attr("cy", function (d) {
-                    return calcPath(source.x, source.y, source.depth)[1]
+                    return calc(source.x, source.y, source.depth)[1]
                 })
                 .attr("r", 0)
 
@@ -146,12 +149,12 @@ function Dchord() {
                 .selectAll('circle')
                 .attr("cx", function (d) {
                     if (d.parent) {
-                        return calcPath(d.x, d.y, d.depth)[0]
+                        return calc(d.x, d.y, d.depth)[0]
                     }
                 })
                 .attr("cy", function (d) {
                     if (d.parent) {
-                        return calcPath(d.x, d.y, d.depth)[1]
+                        return calc(d.x, d.y, d.depth)[1]
                     }
                 })
                 .attr("r", function (d) {
@@ -174,12 +177,12 @@ function Dchord() {
                 .attr("r", 0)
                 .attr("cx", function (d) {
                     if (d.parent) {
-                        return calcPath(source.x, source.y, source.depth)[0]
+                        return calc(source.x, source.y, source.depth)[0]
                     }
                 })
                 .attr("cy", function (d) {
                     if (d.parent) {
-                        return calcPath(source.x, source.y, source.depth)[1]
+                        return calc(source.x, source.y, source.depth)[1]
                     }
                 })
 
@@ -194,8 +197,8 @@ function Dchord() {
                 .attr("transform", "translate(" + width / 2 + "," + radius + ")")
                 .attr("d", function (d) {
                     if (d.source.parent) {
-                        return "M" + calcPath(source.x0, source.y0, source.depth) +
-                            "Q" + calcPath(source.x0, source.y0, source.depth) + "," + calcPath(source.x0, source.y0, source.depth)
+                        return "M" + calc(source.x0, source.y0, source.depth) +
+                            "Q" + calc(source.x0, source.y0, source.depth) + "," + calc(source.x0, source.y0, source.depth)
                     }
                 })
 
@@ -204,8 +207,8 @@ function Dchord() {
                 .duration(500)
                 .attr("d", function (d) {
                     if (d.source.parent) {
-                        return "M" + calcPath(d.source.x, d.source.y, d.source.depth) +
-                            "Q" + calcPath(d.target.x, d.source.y, d.source.depth) + "," + calcPath(d.target.x, d.target.y, d.target.depth)
+                        return "M" + calc(d.source.x, d.source.y, d.source.depth) +
+                            "Q" + calc(d.target.x, d.source.y, d.source.depth) + "," + calc(d.target.x, d.target.y, d.target.depth)
                     }
                 })
 
@@ -214,8 +217,8 @@ function Dchord() {
                 .duration(500)
                 .attr("d", function (d) {
                     if (d.source.parent) {
-                        return "M" + calcPath(source.x, source.y, source.depth) +
-                            "Q" + calcPath(source.x, source.y, source.depth) + "," + calcPath(source.x, source.y, source.depth)
+                        return "M" + calc(source.x, source.y, source.depth) +
+                            "Q" + calc(source.x, source.y, source.depth) + "," + calc(source.x, source.y, source.depth)
                     }
                 })
                 .remove()
@@ -228,7 +231,7 @@ function Dchord() {
     })
 }
 
-function calcPath(x, y, depth) {
+function calc(x, y, depth) {
     var angle = 0.75 * (x + 150) / 180 * Math.PI,
         radius = y;
     if (depth) {
