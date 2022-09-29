@@ -6,7 +6,7 @@ function Dchord() {
     var cluster = d3.cluster()
         .size([360, radius]);
 
-
+    var color = d3.scaleOrdinal(d3.schemeAccent);
     var svg = d3.select('.chord')
         .append("svg")
         .attr("class", "chordSvg")
@@ -63,8 +63,11 @@ function Dchord() {
             .enter()
             .append("g")
             .attr("transform", "translate(" + width / 2 + "," + radius + ")")
-            .attr("class", "chordCir")
+            .attr("class", function (d) {
+                return d.depth == 1 ? "chordCir" : "chordCir chordDetail";
+            })
             .on("click", nodeClick)
+            .on("mouseover", nodeOver)
             .append("circle")
             .attr("opacity", 1)
             .attr("cx", function (d) {
@@ -98,12 +101,24 @@ function Dchord() {
                     }
                 }
             })
+            .attr("fill", function (d) {
+                if (d.depth >= 1) {
+                    // console.log(d.ancestors().slice(-2, -1)[0].data.name);
+                    return color(d.ancestors().slice(-2, -1)[0].data.name);
+                }
+            })
+
+        function nodeOver(d) {
+            if (d.depth == 1) {
+                return;
+            }
+        }
 
         function nodeClick(d) {
-            if(d.depth != 1){
+            if (d.depth != 1) {
                 return;
-            } 
-           
+            }
+
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
@@ -141,6 +156,9 @@ function Dchord() {
                 .attr("cy", function (d) {
                     return calc(source.x, source.y, source.depth)[1]
                 })
+                .attr("class", function (d) {
+                    return d.depth == 1 ? "chordCir" : "chordCir chordDetail";
+                })
                 .attr("r", 0)
 
             nodeEnter.merge(node)
@@ -166,6 +184,12 @@ function Dchord() {
                         } else {
                             return 7
                         }
+                    }
+                })
+                .attr("fill", function (d) {
+                    if (d.depth >= 1) {
+                        // console.log(d.ancestors().slice(-2, -1)[0].data.name);
+                        return color(d.ancestors().slice(-2, -1)[0].data.name);
                     }
                 })
 

@@ -2,14 +2,16 @@ function drawzhiqu(Ddata) {
     var nodes = Ddata.steps
     // var edges = Ddata.edges
     var margin = 13
-    var width = document.querySelector('#zhiqu_process').offsetWidth,
+    
+    var width = document.querySelector('#zhiqu_process').offsetWidth / 1.7,
         height = document.querySelector('#zhiqu_process').offsetHeight;
     var swidth = document.querySelector('#zhiqu_lprocess').offsetWidth,
         sheight = document.querySelector('#zhiqu_lprocess').offsetHeight;
-
+    var svg_width = document.querySelector('#zhiqu_process').offsetWidth
+    
     var svg = d3.select("#zhiqu_process")
         .append("svg")
-        .attr("width", width)
+        .attr("width", svg_width)
         .attr("height", height)
         .attr('class', 'zhiqu_svg')
     var len = Ddata.steps.length
@@ -48,7 +50,7 @@ function drawzhiqu(Ddata) {
     }
 
     ////Bi[0, 3, 7, 11, 14 ] 大节点下标 
-    var br = 25, sr = 5 //大小圆半径
+    var br = 25, sr = 6 //大小圆半径
     //勾股定理算大节点间距
     var X12 = Math.sqrt((tdata[Bi[1]].x1 - tdata[Bi[0]].x1) * (tdata[Bi[1]].x1 - tdata[Bi[0]].x1) + (tdata[Bi[1]].y1 - tdata[Bi[0]].y1) * (tdata[Bi[1]].y1 - tdata[Bi[0]].y1))
     // console.log(X12);
@@ -102,14 +104,14 @@ function drawzhiqu(Ddata) {
     svg.append('path')
         .attr('d', "M" + 0 + "," + 0 + "L" + 0 + "," + height)
         // .attr("class", "line")
-        .attr("stroke", "rgb(190,222,208)")
+        .attr("stroke", "rgb(165,193,167)")
         .attr('stroke-width', "20")
 
     svg.append('path')
         .attr('d', "M" + width + "," + 0 + "L" + width + "," + height)
         // .attr("class", "line")
-        .attr("stroke", "rgb(190,222,208)")
-        .attr('stroke-width', "20")
+        .attr("stroke", "rgb(165,193,167)")
+        .attr('stroke-width', "10")
     //连接线  
     var zhiqu_link = zhiqu_g.selectAll(".zhiqu")
         .append('g')
@@ -123,12 +125,9 @@ function drawzhiqu(Ddata) {
         .attr("opacity", 0)
         .transition()
         .duration(500)
-        .attr("class", "line")
+        .attr("class", "zhiqu_line")
         .attr("opacity", 1)
 
-    var tooltip = d3.select("#zhiqu_rprocess")
-        .append('div')
-        .attr('class', 'tooltip');
     var zhiqu_node = zhiqu_g.selectAll(".zhiqu_dot")
         .append('g')   //圆点分组
         .data(tdata)
@@ -139,20 +138,15 @@ function drawzhiqu(Ddata) {
         .attr("r", function (d) {
             return d.big == 1 ? br : sr
         })
-        .on('mouseover', function (d) {
-            if (d.steps) {
-                this.style.cursor = 'hand'
-            }
-            if (d.big) {
-
-            } else {
-                console.log(1);
-                // tooltip.style('display', 'relative');
-                tooltip.style('opacity', 2);
-                tooltip.html(d.describe);
-            }
+        .attr('class', function (d) {
+            return d.big == 1 ? 'zhiqu_dot big' : 'zhiqu_dot small'
         })
-        .on('click', function (d) {
+        .on('mouseover', mouseover)
+        .on('mouseout',function (d,i){
+            d3.select('.zhiqu_dot_line').remove();
+            d3.select('.zhiqu_step' + i).attr("opacity", 0)
+        })
+        .on('click', function (d,i) {
             d3.select('.zhiqu_ssvg').remove();
             var ssvg = d3.select("#zhiqu_lprocess")
                 .append("svg")
@@ -167,7 +161,7 @@ function drawzhiqu(Ddata) {
                         x: swidth / 4, y: height / 8 * (i + 1)
                     };
                 })
-                console.log(sdata);
+                // console.log(sdata);
 
                 //画竖线
                 ssvg.selectAll('.line')
@@ -178,7 +172,8 @@ function drawzhiqu(Ddata) {
                         return "M" + swidth / 4 + "," + height / 8 + "L" + swidth / 4 + "," + height / 8 * (sdata.length)
                     })
                     // .attr("class", "line")
-                    .attr("stroke", "#4a4a4a")
+                    .attr("stroke", "rgb(226,217,204)")
+                    .attr('stroke-width','2')
                     .attr("opacity", 1)
 
                 //画圆点
@@ -189,8 +184,11 @@ function drawzhiqu(Ddata) {
                     .attr("cx", d => d.x)
                     .attr("cy", d => d.y)
                     .attr("r", 5)
-                    .attr("opacity", 1);
-
+                    .attr("opacity", 1)
+                    .attr('fill','rgb(211,173,162)')
+                    .on('mouseover',function (d){
+                        
+                    })
                 //添加文字
                 ssvg.selectAll('.zhiqu_text')
                     .data(sdata)
@@ -201,43 +199,117 @@ function drawzhiqu(Ddata) {
                     .attr('y', d => d.y + 4)
                     .attr('font-size', 13)
             }
+            if(d.big){
 
+            }else{
+                
+            }
         })
         .attr("opacity", 0)
         .transition()
         .duration(500)
         .attr("opacity", 1);
-
+    var str = []   //用这个来存放tspan的文字 没搞懂还
     var zhiqu_text = zhiqu_g.selectAll('.zhiqu_text')
         .data(tdata)
         .enter()
         .append("text")
         .text(function (d) {
-            // if(d.name.length > 2){
+            if (d.name.length > 2 && d.big) {
+                //     str.push(d.name.substr(0, 2) + ',')
+                //     str.push(d.name.substr(2, 2))
+                return d.name
+            } else {
+                return d.name
+            }
 
-            // }
-            return d.name
         })
         .attr('x', function (d) {
             if (d.big == 1) {
                 return d.x1 - this.innerHTML.length * 16 / 2
             } else {
-                return d.x1 - this.innerHTML.length * 16 / 2
+                return svg_width - 100
             }
         })
         .attr('y', function (d) {
             if (d.big == 1) {
                 return d.y1 + 7
             } else {
-                return d.y1 + 18
+                return d.y1 + 5
             }
         })
-        .attr("class", function (d) {
-            return d.big == 1 ? "zhiqu_step main" : "zhiqu_step"
+        .attr("class", function (d,i) {
+            if(d.big){
+                return "zhiqu_step main"
+            }else {
+                return "zhiqu_step" + i 
+            }
+            // return d.big == 1 ? "zhiqu_step main" : "zhiqu_step"
         })
         .attr('opacity', function (d) {
             if (d.big != 1) {
                 return 0
             }
         })
+    console.log(str);
+    //    var change_str = str.split(",");
+    //大节点四个字换行                         暂时放弃
+    // zhiqu_text.selectAll("tspan")
+    //     .data(str)
+    //     .enter()
+    //     .append("tspan")
+    //     .attr("x", zhiqu_text.attr("x"))
+    //     .attr("dy", "1em")
+    //     .text(function (d) {
+    //         // if(d.name.length > 2 && d.big){
+    //         return d.name;
+    //         // }
+    //     });
+
+    //圆点交互——点击
+    var zhiqu_active = document.querySelectorAll('.zhiqu_dot.small')
+    zhiqu_active.forEach(function (item, index) {
+        item.addEventListener('click', function () {
+            zhiqu_active.forEach(function (item) {
+                item.classList.remove('selected')
+            })
+            // describe.innerHTML = Pdata.click.describe[index];
+            item.classList.add('selected')
+            console.log(1);
+        })
+    })
+
+    //圆点交互——悬停
+    function mouseover(d,i) {
+        d3.select('.tooltip').remove();
+        var tooltip = d3.select("#zhiqu_process")
+            .append('div')
+            .attr('class', 'tooltip');
+        if (d.steps) {
+            this.style.cursor = 'hand'
+        }
+        if (d.big) {
+
+        } else {
+            if (d.hasOwnProperty("describe")) {
+                tooltip.style('opacity', 2);
+                tooltip.html(d.describe);
+            }
+            //画线
+            d3.select('.zhiqu_dot_line').remove();
+            svg.append('path')
+                .attr('d', 'M' + (d.x1 + sr * 2.8) + "," + d.y1 + 'L' + (svg_width - 90) + ',' + d.y1)
+                .attr("stroke", "rgba(169,166,158,.4)")
+                .attr('stroke-width', "2")
+                .attr('class','zhiqu_dot_line')
+                .attr("opacity", 0)
+                .transition()
+                .duration(500)
+                .attr("opacity", 1)
+                d3.select('.zhiqu_step' + i)
+                .transition()
+                .duration(500)
+                .attr("opacity", 1)
+        }
+    }
 }

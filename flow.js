@@ -313,6 +313,7 @@ function lines(Pdata, index) {
         }
     }
     var cactive = document.querySelectorAll('.active')
+    // console.log(cactive);
     cactive.forEach(function (item, index) {
         item.addEventListener('click', function () {
             cactive.forEach(function (item) {
