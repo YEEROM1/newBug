@@ -345,6 +345,7 @@ function render(index) {
                 item.addEventListener('click', function () {
                     if (this.id != m) {
                         d3.select('.psvg').remove();
+                        d3.select('.zhiqu_svg').remove();
                         render(this.id);
                         m = this.id
                     }
