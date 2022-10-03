@@ -103,7 +103,6 @@ function Dchord() {
             })
             .attr("fill", function (d) {
                 if (d.depth >= 1) {
-                    // console.log(d.ancestors().slice(-2, -1)[0].data.name);
                     return color(d.ancestors().slice(-2, -1)[0].data.name);
                 }
             })
@@ -190,12 +189,6 @@ function Dchord() {
                         }
                     }
                 })
-                .attr("fill", function (d) {
-                    if (d.depth >= 1) {
-                        // console.log(d.ancestors().slice(-2, -1)[0].data.name);
-                        return color(d.ancestors().slice(-2, -1)[0].data.name);
-                    }
-                })
 
             node.exit()
                 .transition()
@@ -278,4 +271,3 @@ function calc(x, y, depth) {
         return [radius * Math.cos(angle), radius * Math.sin(angle)];
     }
 }
-
