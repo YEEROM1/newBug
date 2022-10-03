@@ -147,7 +147,9 @@ function Dchord() {
             var nodeEnter = node.enter()
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + radius + ")")
-                .attr("class", "chordCir")
+                .attr("class", function (d) {
+                    return d.depth == 1 ? "chordCir" : "chordCir chordDetail";
+                })
 
             nodeEnter.append("circle")
                 .attr("cx", function (d) {
@@ -156,8 +158,10 @@ function Dchord() {
                 .attr("cy", function (d) {
                     return calc(source.x, source.y, source.depth)[1]
                 })
-                .attr("class", function (d) {
-                    return d.depth == 1 ? "chordCir" : "chordCir chordDetail";
+                .attr("fill", function (d) {
+                    if (d.depth >= 1) {
+                        return color(d.ancestors().slice(-2, -1)[0].data.name);
+                    }
                 })
                 .attr("r", 0)
 
