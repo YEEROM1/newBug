@@ -1,21 +1,30 @@
 function Dchord() {
-    var width = document.querySelector('.chord').offsetWidth,
+    let width = document.querySelector('.chord').offsetWidth,
         height = document.querySelector(".chord").offsetHeight;
 
-    var radius = Math.min(width, height) / 2;
-    var cluster = d3.cluster()
+    let radius = Math.min(width, height) / 2;
+    let cluster = d3.cluster()
         .size([360, radius]);
 
-    var color = d3.scaleOrdinal(d3.schemeAccent);
-    var svg = d3.select('.chord')
+    let color = d3.scaleOrdinal(d3.schemeAccent);
+    let svg = d3.select('.chord')
         .append("svg")
         .attr("class", "chordSvg")
         .attr("width", width)
         .attr("height", radius * 2)
 
+    let tooltip = d3.select('.chord')
+        .append("div")
+        .attr("class", "chord-tooltip")
+
+    tooltip.append('div')
+        .attr('class', 'flavor');
+    tooltip.append('div')
+        .attr('class', 'name');
+
     d3.json('chord.json').then(data => {
 
-        var root = d3.hierarchy(data)
+        let root = d3.hierarchy(data)
         cluster(root);
 
         for (let i = 0; i < root.children.length; i++) {
@@ -28,12 +37,14 @@ function Dchord() {
         })
 
         // console.log(root);
-        svg.selectAll("path")
+        let chordLinks = svg.selectAll("path")
             .data(root.links())
             .enter()
             .append("path")
             .attr("class", "chordLinks")
             .attr("transform", "translate(" + width / 2 + "," + radius + ")")
+
+        chordLinks
             .attr("d", function (d) {
                 if (d.source.parent) {
                     return "M" + calc(d.source.x, d.source.y, d.source.depth) +
@@ -58,7 +69,7 @@ function Dchord() {
             })
             .attr("opacity", 1)
 
-        svg.selectAll("circle")
+        let chordCir = svg.selectAll("circle")
             .data(root.descendants())
             .enter()
             .append("g")
@@ -66,8 +77,8 @@ function Dchord() {
             .attr("class", function (d) {
                 return d.depth == 1 ? "chordCir" : "chordCir chordDetail";
             })
-            .on("click", nodeClick)
-            .on("mouseover", nodeOver)
+
+        chordCir
             .append("circle")
             .attr("opacity", 1)
             .attr("cx", function (d) {
@@ -107,43 +118,37 @@ function Dchord() {
                 }
             })
 
-        function nodeOver(d) {
-            if (d.depth == 1) {
-                return;
-            }
-        }
-
-        function nodeClick(d) {
-            if (d.depth != 1) {
-                return;
-            }
-
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            }
-            else {
-                d.children = d._children;
-                d._children = null;
-            }
-            update(d);
-        }
+        chordCir
+            .on("click", nodeClick)
+            .on("mouseover", nodeOver)
+            .on('mousemove', function (d) {
+                console.log(d);
+                tooltip.style('top', (calc(d.x, d.y, d.depth)[1] + radius + 10) + 'px')
+                    .style('left', (calc(d.x, d.y, d.depth)[0] + width / 2 + 10) + 'px');
+            })
+            .on('mouseout', function (d) {
+                d3.select(this)
+                    .style("stroke", "rgb(110, 78, 78)")
+                    .style("stroke-width", "2px");
+                tooltip.style('display', 'none');
+                tooltip.style('opacity', 0);
+            })
 
         function update(source) {
             cluster(root)
-            var nodeData = root.descendants();
-            var linkData = root.links();
+            let nodeData = root.descendants();
+            let linkData = root.links();
             for (let i = 0; i < 3; i++) {
                 nodeData[i].x = nodeData[i].x0;
                 nodeData[i].y = nodeData[i].y0;
             }
 
-            var node = svg.selectAll('g.chordCir')
+            let node = svg.selectAll('g.chordCir')
                 .data(nodeData, function (d, i) {
                     return d.id || (d.id = ++i)
                 })
 
-            var nodeEnter = node.enter()
+            let nodeEnter = node.enter()
                 .append("g")
                 .attr("transform", "translate(" + width / 2 + "," + radius + ")")
                 .attr("class", function (d) {
@@ -163,6 +168,22 @@ function Dchord() {
                     }
                 })
                 .attr("r", 0)
+
+            nodeEnter
+                .on("click", nodeClick)
+                .on("mouseover", nodeOver)
+                .on('mousemove', function (d) {
+                    console.log(d);
+                    tooltip.style('top', (calc(d.x, d.y, d.depth)[1] + radius + 10) + 'px')
+                        .style('left', (calc(d.x, d.y, d.depth)[0] + width / 2 + 10) + 'px');
+                })
+                .on('mouseout', function (d) {
+                    d3.select(this)
+                        .style("stroke", "rgb(110, 78, 78)")
+                        .style("stroke-width", "2px");
+                    tooltip.style('display', 'none');
+                    tooltip.style('opacity', 0);
+                })
 
             nodeEnter.merge(node)
                 .transition()
@@ -207,11 +228,11 @@ function Dchord() {
                     }
                 })
 
-            var path = svg.selectAll('path.chordLinks').data(linkData, function (d) {
+            let path = svg.selectAll('path.chordLinks').data(linkData, function (d) {
                 return d.target.id
             })
 
-            var pathEnter = path
+            let pathEnter = path
                 .enter()
                 .insert("path", "g")
                 .attr("class", "chordLinks")
@@ -249,11 +270,41 @@ function Dchord() {
                 d.y0 = d.y;
             });
         }
+
+        function nodeOver(d) {
+            if (d.depth <= 2) {
+                return;
+            }
+            tooltip.select('.flavor').html("香型: <b>" + d.parent.data.name + "</b>");
+            tooltip.select('.name').html("酒名: <b>" + d.data.name + "</b>");
+
+            d3.select(this)
+                .style("stroke", "#01847f")
+                .style("stroke-width", "2px");
+
+            tooltip.style('display', 'block');
+            tooltip.style('opacity', 2);
+        }
+
+        function nodeClick(d) {
+            if (d.depth != 1) {
+                return;
+            }
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            }
+            else {
+                d.children = d._children;
+                d._children = null;
+            }
+            update(d);
+        }
     })
 }
 
 function calc(x, y, depth) {
-    var angle = 0.75 * (x + 150) / 180 * Math.PI,
+    let angle = 0.75 * (x + 150) / 180 * Math.PI,
         radius = y;
     if (depth) {
         if (depth == 3) {
@@ -271,3 +322,4 @@ function calc(x, y, depth) {
         return [radius * Math.cos(angle), radius * Math.sin(angle)];
     }
 }
+

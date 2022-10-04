@@ -39,12 +39,12 @@
 #zhiqu_process {
     width: calc(23vw);
     height: calc(60vh);
+    position: relative;
     display: flex;
     justify-content: flex-start;
 }
 
 #zhiqu_rprocess {
-
     width: calc(9vw);
     height: calc(60vh);
 }
@@ -54,16 +54,32 @@
 }
 
 .tooltip {
+    position: absolute;
     background: #eee;
     box-shadow: 0 0 5px #999999;
     color: #333;
     font-size: 12px;
-    height: 30%;
     margin: 10px;
     padding: 10px;
+    right: 0;
     text-align: center;
     opacity: 0;
     max-width: 100px;
+}
+
+.chord-tooltip {
+    background: #eee;
+    box-shadow: 0 0 5px #999999;
+    color: #333;
+    font-size: 12px;
+    left: 130px;
+    padding: 10px;
+    position: absolute;
+    text-align: center;
+    top: 95px;
+    z-index: 10;
+    display: block;
+    opacity: 0;
 }
 
 

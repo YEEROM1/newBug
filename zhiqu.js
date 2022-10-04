@@ -2,13 +2,13 @@ function drawzhiqu(Ddata) {
     var nodes = Ddata.steps
     // var edges = Ddata.edges
     var margin = 13
-    
+
     var width = document.querySelector('#zhiqu_process').offsetWidth / 1.7,
         height = document.querySelector('#zhiqu_process').offsetHeight;
     var swidth = document.querySelector('#zhiqu_lprocess').offsetWidth,
         sheight = document.querySelector('#zhiqu_lprocess').offsetHeight;
     var svg_width = document.querySelector('#zhiqu_process').offsetWidth
-    
+
     var svg = d3.select("#zhiqu_process")
         .append("svg")
         .attr("width", svg_width)
@@ -128,6 +128,10 @@ function drawzhiqu(Ddata) {
         .attr("class", "zhiqu_line")
         .attr("opacity", 1)
 
+    var tooltip = d3.select("#zhiqu_process")
+        .append('div')
+        .attr('class', 'tooltip');
+
     var zhiqu_node = zhiqu_g.selectAll(".zhiqu_dot")
         .append('g')   //圆点分组
         .data(tdata)
@@ -142,11 +146,13 @@ function drawzhiqu(Ddata) {
             return d.big == 1 ? 'zhiqu_dot big' : 'zhiqu_dot small'
         })
         .on('mouseover', mouseover)
-        .on('mouseout',function (d,i){
+        .on('mouseout', function (d, i) {
+            tooltip.style("opacity", 0)
+            tooltip.style("z-index", -1)
             d3.select('.zhiqu_dot_line').remove();
             d3.select('.zhiqu_step' + i).attr("opacity", 0)
         })
-        .on('click', function (d,i) {
+        .on('click', function (d, i) {
             d3.select('.zhiqu_ssvg').remove();
             var ssvg = d3.select("#zhiqu_lprocess")
                 .append("svg")
@@ -173,7 +179,7 @@ function drawzhiqu(Ddata) {
                     })
                     // .attr("class", "line")
                     .attr("stroke", "rgb(226,217,204)")
-                    .attr('stroke-width','2')
+                    .attr('stroke-width', '2')
                     .attr("opacity", 1)
 
                 //画圆点
@@ -185,9 +191,9 @@ function drawzhiqu(Ddata) {
                     .attr("cy", d => d.y)
                     .attr("r", 5)
                     .attr("opacity", 1)
-                    .attr('fill','rgb(211,173,162)')
-                    .on('mouseover',function (d){
-                        
+                    .attr('fill', 'rgb(211,173,162)')
+                    .on('mouseover', function (d) {
+
                     })
                 //添加文字
                 ssvg.selectAll('.zhiqu_text')
@@ -199,10 +205,10 @@ function drawzhiqu(Ddata) {
                     .attr('y', d => d.y + 4)
                     .attr('font-size', 13)
             }
-            if(d.big){
+            if (d.big) {
 
-            }else{
-                
+            } else {
+
             }
         })
         .attr("opacity", 0)
@@ -238,11 +244,11 @@ function drawzhiqu(Ddata) {
                 return d.y1 + 5
             }
         })
-        .attr("class", function (d,i) {
-            if(d.big){
+        .attr("class", function (d, i) {
+            if (d.big) {
                 return "zhiqu_step main"
-            }else {
-                return "zhiqu_step" + i 
+            } else {
+                return "zhiqu_step" + i
             }
             // return d.big == 1 ? "zhiqu_step main" : "zhiqu_step"
         })
@@ -251,7 +257,6 @@ function drawzhiqu(Ddata) {
                 return 0
             }
         })
-    console.log(str);
     //    var change_str = str.split(",");
     //大节点四个字换行                         暂时放弃
     // zhiqu_text.selectAll("tspan")
@@ -280,20 +285,17 @@ function drawzhiqu(Ddata) {
     })
 
     //圆点交互——悬停
-    function mouseover(d,i) {
-        d3.select('.tooltip').remove();
-        var tooltip = d3.select("#zhiqu_process")
-            .append('div')
-            .attr('class', 'tooltip');
+    function mouseover(d, i) {
         if (d.steps) {
             this.style.cursor = 'hand'
         }
         if (d.big) {
 
         } else {
-            if (d.hasOwnProperty("describe")) {
+            if (d.describe) {
                 tooltip.style('opacity', 2);
                 tooltip.html(d.describe);
+                tooltip.style('z-index', 10)
             }
             //画线
             d3.select('.zhiqu_dot_line').remove();
@@ -301,12 +303,12 @@ function drawzhiqu(Ddata) {
                 .attr('d', 'M' + (d.x1 + sr * 2.8) + "," + d.y1 + 'L' + (svg_width - 90) + ',' + d.y1)
                 .attr("stroke", "rgba(169,166,158,.4)")
                 .attr('stroke-width', "2")
-                .attr('class','zhiqu_dot_line')
+                .attr('class', 'zhiqu_dot_line')
                 .attr("opacity", 0)
                 .transition()
                 .duration(500)
                 .attr("opacity", 1)
-                d3.select('.zhiqu_step' + i)
+            d3.select('.zhiqu_step' + i)
                 .transition()
                 .duration(500)
                 .attr("opacity", 1)

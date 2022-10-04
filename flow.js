@@ -313,7 +313,6 @@ function lines(Pdata, index) {
         }
     }
     var cactive = document.querySelectorAll('.active')
-    // console.log(cactive);
     cactive.forEach(function (item, index) {
         item.addEventListener('click', function () {
             cactive.forEach(function (item) {
@@ -339,7 +338,7 @@ function render(index) {
     d3.json('flow.json').then(d => {
         lines(d.class[index], index)
         drawzhiqu(d.zhiqu[index])
-        if (!index) {
+        if (index === 0) {
             var sort = document.querySelectorAll('.sort1')
             sort.forEach(function (item) {
                 item.addEventListener('click', function () {
@@ -400,7 +399,7 @@ var mSwiper = new Swiper('.swiper', {
 
 var swiperA = new Swiper('.swiperA', {
     direction: "vertical",
-    initialSlide: 0,
+    initialSlide: 1,
     mousewheel: true,
     pagination: {
         el: '.swiper-pagination',
