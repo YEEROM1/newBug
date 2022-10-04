@@ -399,7 +399,7 @@ var mSwiper = new Swiper('.swiper', {
 
 var swiperA = new Swiper('.swiperA', {
     direction: "vertical",
-    initialSlide: 1,
+    initialSlide: 0,
     mousewheel: true,
     pagination: {
         el: '.swiper-pagination',
