@@ -298,6 +298,7 @@
 }
 
 .chordDetail circle:hover {
+    fill: antiquewhite;
     scale: 1.5
 }
 
