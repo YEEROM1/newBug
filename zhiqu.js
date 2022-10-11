@@ -216,54 +216,38 @@ function drawzhiqu(Ddata) {
         .duration(500)
         .attr("opacity", 1);
     var str = []   //用这个来存放tspan的文字 没搞懂还
+
     var zhiqu_text = zhiqu_g.selectAll('.zhiqu_text')
         .data(tdata)
         .enter()
         .append("text")
         .text(function (d) {
-            if (d.name.length > 2 && d.big) {
-                //     str.push(d.name.substr(0, 2) + ',')
-                //     str.push(d.name.substr(2, 2))
-                return d.name
-            } else {
+            if (d.big) {
                 return d.name
             }
-
         })
         .attr('x', function (d) {
-            if (d.big == 1) {
-                return d.x1 - this.innerHTML.length * 16 / 2
-            } else {
-                return svg_width - 100
-            }
+            return d.big ? d.x1 - this.innerHTML.length * 16 / 2 : svg_width - 100
         })
         .attr('y', function (d) {
-            if (d.big == 1) {
-                return d.y1 + 7
-            } else {
-                return d.y1 + 5
-            }
+            return d.big ? d.y1 + 7 : d.y1 + 5
         })
         .attr("class", function (d, i) {
-            if (d.big) {
-                return "zhiqu_step main"
-            } else {
-                return "zhiqu_step" + i
-            }
-            // return d.big == 1 ? "zhiqu_step main" : "zhiqu_step"
+            return d.big == 1 ? "zhiqu_step main" : "zhiqu_step"
         })
         .attr('opacity', function (d) {
-            if (d.big != 1) {
-                return 0
-            }
+            return d.big ? 1 : 0
         })
-    //    var change_str = str.split(",");
-    //大节点四个字换行                         暂时放弃
+
+    // var change_str = str.split(",");
+    // 大节点四个字换行                         暂时放弃
     // zhiqu_text.selectAll("tspan")
-    //     .data(str)
+    //     .data(tdata)
     //     .enter()
     //     .append("tspan")
-    //     .attr("x", zhiqu_text.attr("x"))
+    //     .attr("x", function (d) {
+    //         console.log(d)
+    //     })
     //     .attr("dy", "1em")
     //     .text(function (d) {
     //         // if(d.name.length > 2 && d.big){
@@ -280,7 +264,6 @@ function drawzhiqu(Ddata) {
             })
             // describe.innerHTML = Pdata.click.describe[index];
             item.classList.add('selected')
-            console.log(1);
         })
     })
 
@@ -300,7 +283,7 @@ function drawzhiqu(Ddata) {
             //画线
             d3.select('.zhiqu_dot_line').remove();
             svg.append('path')
-                .attr('d', 'M' + (d.x1 + sr * 2.8) + "," + d.y1 + 'L' + (svg_width - 90) + ',' + d.y1)
+                .attr('d', 'M' + (d.x1 + sr * 2.8) + "," + d.y1 + 'L' + (svg_width - 60) + ',' + d.y1)
                 .attr("stroke", "rgba(169,166,158,.4)")
                 .attr('stroke-width', "2")
                 .attr('class', 'zhiqu_dot_line')

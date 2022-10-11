@@ -196,13 +196,20 @@ function lines(Pdata, index) {
             .attr("cy", line.y())
             .attr("opacity", 0)
             .transition()
-            .duration(700)
-            .delay(300)
+            .duration(function (d) {
+                if (like(d.x, Pdata.click.node)) {
+                    return 1000
+                } else {
+                    return 600
+                }
+            })
+            .delay(500)
             .attr("opacity", 1)
             .attr("r", function (d) {
                 return like(d.x, data.main) ? 12 : 7
             });
 
+        //上方小圆
         tsvg.selectAll(".tips")
             .data(data.otext.tips.step)
             .enter()
@@ -238,6 +245,7 @@ function lines(Pdata, index) {
             .attr("y", height / (Ddata.length + 1) * (k + 1) - 44)
             .attr("opacity", 1)
 
+        //画连接线
         if (data.otext.link[0].start) {
             var lprocess = data.otext.link[0]
             var lbandwidth = (x(lprocess.end) - x(lprocess.start)) / (lprocess.process.length + 1);
@@ -298,7 +306,7 @@ function lines(Pdata, index) {
                 .attr("class", function (d) {
                     var temp = "dot process";
                     if (like(d, Pdata.click.node)) {
-                        temp += " " + "active"
+                        temp += "active"
                     }
                     return temp
                 })
@@ -318,9 +326,9 @@ function lines(Pdata, index) {
             cactive.forEach(function (item) {
                 item.classList.remove('selected')
             })
+            console.log(Pdata.click.describe[index - 1], index);
             describe.innerHTML = Pdata.click.describe[index];
             item.classList.add('selected')
-            console.log(1);
         })
     })
 }
@@ -345,9 +353,14 @@ function render(index) {
                     if (this.id != m) {
                         d3.select('.psvg').remove();
                         d3.select('.zhiqu_svg').remove();
+                        document.querySelector('.describe').innerHTML = "";
                         render(this.id);
                         m = this.id
                     }
+                    sort.forEach(function (d) {
+                        d.classList.remove('sactive');
+                    })
+                    this.classList.add('sactive');
                 })
             })
         }
@@ -382,11 +395,11 @@ var mSwiper = new Swiper('.swiper', {
             }
             d3.select('.psvg').remove();
             d3.select('.zhiqu_svg').remove();
-            document.querySelector('.describe').innerHTML = "";
+            d3.select('.describe').innerHTML = "";
         },
         slideChangeTransitionEnd: function () {
             var process = document.querySelector('.process')
-            var div = '<div class="sort"><div class="sort1" id="0">原窖分层<br/>堆糟法</div><div class="sort1" id="1">跑窖分层<br/>蒸馏法</div><div class="sort1" id="2">老五甑</div></div>'
+            var div = '<div class="sort"><div class="sort1 sactive" id="0">原窖分层<br/>堆糟法</div><div class="sort1" id="1">跑窖分层<br/>蒸馏法</div><div class="sort1" id="2">老五甑</div></div>'
             if (this.realIndex > 0) {
                 render(this.realIndex + 2)
             } else {
